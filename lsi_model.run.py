@@ -25,8 +25,7 @@ human_data_file = p['base_path'] + p['human_data_file']
 lee_corpus = p['base_path'] + p['lee_corpus']
 result_path = p['base_path'] + p['result_path']
 
-#output_dir = os.path.join(result_path, p['sumatra_label'])
-output_dir = os.path.join(result_path, 'bla')
+output_dir = os.path.join(result_path, p['sumatra_label'])
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
 
@@ -63,6 +62,7 @@ lsi = models.LsiModel(pre_model[corpus_bow], id2word=dictionary, numTopics=p['nu
 lsi.save(os.path.join(output_dir, p['lsi_extension']))
 logger.info('finished --> lsi model saved to: %s' % os.path.join(output_dir, p['lsi_extension']))
 
+# check for correlation with lee human data
 logger.info('load smal lee corpus and preprocess')
 with open(lee_corpus, 'r') as f:
     preproc_lee_texts = preprocessing.preprocess_documents(f.readlines())
@@ -88,4 +88,4 @@ human_sim_vector = human_sim_matrix[np.triu_indices(sim_m_size, 1)]
 
 # compute correlations
 cor = np.corrcoef(sim_vector, human_sim_vector)
-print cor[0, 1]
+logger.info("correlation with lee human data: %f" %  cor[0, 1])
