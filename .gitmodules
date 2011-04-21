@@ -1,3 +1,0 @@
-[submodule "gensim"]
-	path = gensim
-	url = git@github.com:quesada/gensim.git

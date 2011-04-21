@@ -1,13 +1,3 @@
-HINTS FOR CLONING (SUBMODULE)
-==============================
-
-a simple git clone on the runs-gensim repository will leave the gensim 
-submodule, on which it depends, unpopulated. In order to also pull the content
-of the submodule the two following commands are necessary:
-    git submodule init 
-    git submodule update
-
-
 RUNS
 =====================
 Runs are a recipe to produce a space.
