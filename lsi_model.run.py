@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" 
+"""
     This run produces an LSI model with Tfidf or log_entropy preprocessing.
-    
-    
 """
 
 import os.path
@@ -22,18 +20,18 @@ from gensim import utils, similarities, matutils, models
 
 parameter_file = sys.argv[1]
 p = build_parameters(parameter_file)
-working_corpus  = p['base_path'] + p['corpus_path'] + p['corpus_name']
+working_corpus = p['base_path'] + p['corpus_path'] + p['corpus_name']
 human_data_file = p['base_path'] + p['human_data_file']
-lee_corpus      = p['base_path'] + p['lee_corpus']
-result_path     = p['base_path'] + p['result_path']
+lee_corpus = p['base_path'] + p['lee_corpus']
+result_path = p['base_path'] + p['result_path']
 
 #output_dir = os.path.join(result_path, p['sumatra_label'])
-output_dir = os.path.join(result_path, 'bla') + os.sep
+output_dir = os.path.join(result_path, 'bla')
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
 
 # set up the logger to print to a file and stdout
-logger = logging.getLogger('runs')
+logger = logging.getLogger('gensim')
 file_handler = logging.FileHandler(os.path.join(output_dir, "run.log"), 'w')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 file_handler.setFormatter(formatter)
@@ -53,16 +51,17 @@ corpus_bow = MmCorpus(working_corpus + '_bow.mm')
 
 logger.info("create preprocessing model and save it to disk")
 if p['pre_model'] == 'tfidf':
-    pre_model = TfidfModel(corpus_bow, id2word=dictionary.id2token, normalize = True)
+    pre_model = TfidfModel(corpus_bow, id2word=dictionary, normalize = True)
 elif p['pre_model'] == 'log_ent':
-    pre_model = LogEntropyModel(corpus_bow, id2word=dictionary.id2token, normalize = True)
+    pre_model = LogEntropyModel(corpus_bow, id2word=dictionary, normalize = True)
 else:
     raise ValueError('model parameter %s not known' % p['pre_model'])
-pre_model.save(output_dir + p['pre_model_extension'])
+pre_model.save(os.path.join(output_dir, p['pre_model_extension']))
 
 logger.info('initialize LSI model')
 lsi = models.LsiModel(pre_model[corpus_bow], id2word=dictionary, numTopics=p['num_topics'])
-lsi.save((result_path + p['corpus_name'] + '_%i_'  + p['lsi_extension']) % p['num_topics'])
+lsi.save(os.path.join(output_dir, p['lsi_extension']))
+logger.info('finished --> lsi model saved to: %s' % os.path.join(output_dir, p['lsi_extension']))
 
 logger.info('load smal lee corpus and preprocess')
 with open(lee_corpus, 'r') as f:
