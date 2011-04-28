@@ -7,7 +7,7 @@ lsi_extension       = 'lsi.model'
 # paths
 base_path       = '/mnt/Data/'
 corpus_path     = 'corpora/wiki/wiki-mar2008/'
-corpus_name     = 'head500.noblanks.cor'
+corpus_name     = 'stemmedAllCleaned-fq10-cd10.noblanks.cor'
 human_data_file = "corpora/lee/lee-doc2doc/similarities0-1.txt"
 lee_corpus      = "corpora/lee/lee.cor"
 result_path     = "results/"
