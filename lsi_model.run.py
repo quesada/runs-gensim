@@ -45,6 +45,7 @@ logger.info("running %s" % ' '.join(sys.argv))
 
 logger.info('loading word mapping')
 dictionary = Dictionary.loadFromText(working_corpus + p['word_ids_extension'])
+logger.info(dictionary)
 
 logger.info('loading corpus')
 corpus_bow = MmCorpus(working_corpus + '_bow.mm')

@@ -1,0 +1,12 @@
+result_path = "results/"
+lee_corpus = "corpora/lee/lee.cor"
+corpus_path = "corpora/wiki/wiki-mar2008/"
+pre_model = "log_ent"
+human_data_file = "corpora/lee/lee-doc2doc/similarities0-1.txt"
+sumatra_label = "20110428-160533"
+pre_model_extension = "pre.model"
+base_path = "/mnt/Data/"
+corpus_name = "stemmedAllCleaned-fq10-cd10.noblanks.cor"
+lsi_extension = "lsi.model"
+word_ids_extension = "_wordids.txt"
+num_topics = 10
