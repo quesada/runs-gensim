@@ -11,6 +11,7 @@ import sys
 import numpy as np
 import logging
 from sumatra.parameters import build_parameters
+from datetime import datetime
 
 from gensim.corpora import Dictionary, MmCorpus
 from gensim.models.tfidfmodel import TfidfModel
@@ -41,6 +42,8 @@ logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 logger.info("running %s" % ' '.join(sys.argv))
 
+# remember starting time for runtime evaluation
+start = datetime.now()
 
 logger.info('loading word mapping')
 dictionary = Dictionary.loadFromText(working_corpus + p['word_ids_extension'])
@@ -89,3 +92,6 @@ human_sim_vector = human_sim_matrix[np.triu_indices(sim_m_size, 1)]
 # compute correlations
 cor = np.corrcoef(sim_vector, human_sim_vector)
 logger.info("correlation with lee human data: %f" %  cor[0, 1])
+
+dif = start - datetime.now()
+logger.info("finished running after %d days and %d mins" % dif.days, dif.min)
