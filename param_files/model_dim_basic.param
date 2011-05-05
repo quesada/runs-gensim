@@ -1,0 +1,21 @@
+# model from which run to take
+run = '20110429-143751'
+
+# configuration
+lsi_ext       = 'lsi.model'
+pre_model_ext = 'pre.model'
+word_ids_ext  = '_wordids.txt'
+
+# dimensions
+min_dim     = 2
+dim_step    = 2
+
+# paths
+base_path       = '/Users/dedan/projects/mpi/data/'
+corpus_path     = 'corpora/wiki/wiki-mar2008/'
+corpus_name     = 'head500.noblanks.cor'
+human_data_file = "corpora/lee/lee-doc2doc/similarities0-1.txt"
+lee_corpus      = "corpora/lee/lee.cor"
+result_path     = "results/"
+
+pre_model = "log_ent"
