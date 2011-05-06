@@ -96,4 +96,4 @@ cor = np.corrcoef(sim_vector, human_sim_vector)
 logger.info("correlation with lee human data: %f" %  cor[0, 1])
 
 dif = start - datetime.now()
-logger.info("finished running after %d days and %d mins" % dif.days, dif.min)
+logger.info("finished running after %d days and %d mins" % (dif.days, dif.min))
