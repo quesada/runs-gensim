@@ -64,6 +64,8 @@ pre_model.save(os.path.join(output_dir, p['pre_model_extension']))
 
 logger.info('initialize LSI model')
 lsi = models.LsiModel(pre_model[corpus_bow], id2word=dictionary, numTopics=p['num_topics'])
+np.save(os.path.join(output_dir, 'u.npy'), lsi.projection.u)
+np.save(os.path.join(output_dir, 's.npy'), lsi.projection.s)
 lsi.save(os.path.join(output_dir, p['lsi_extension']))
 logger.info('finished --> lsi model saved to: %s' % os.path.join(output_dir, p['lsi_extension']))
 
@@ -96,4 +98,4 @@ cor = np.corrcoef(sim_vector, human_sim_vector)
 logger.info("correlation with lee human data: %f" %  cor[0, 1])
 
 dif = start - datetime.now()
-logger.info("finished running after %d days and %d mins" % dif.days, dif.min)
+logger.info("finished after %d days and %d secs" % (dif.days, dif.seconds))
