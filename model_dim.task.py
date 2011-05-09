@@ -6,7 +6,8 @@ model_dim.py
 do lower dim analysis on a higher dim model
 
 """
-
+import matplotlib
+matplotlib.use("Agg")
 import sys
 from os import path
 import os
