@@ -20,7 +20,7 @@ from sumatra.parameters import build_parameters
 from gensim.models.lsimodel import LsiModel
 from gensim.utils import SaveLoad
 from gensim.parsing import preprocessing
-from gensim.corpora import Dictionary
+import gensim.corpora.Dictionary as dc
 from gensim import utils, similarities, matutils, models
 
 
@@ -55,10 +55,9 @@ lsi = LsiModel.load(model_path)
 pre = SaveLoad.load(path.join(result_path, p['run'], p['pre_model_ext']))
 
 logger.info('loading word mapping')
-dictionary = Dictionary.loadFromText(path.join(p['base_path'],
-                                               p['corpus_path'],
-                                               p['corpus_name'],
-                                               p['word_ids_ext']))
+dictionary = dc.loadFromText(path.join(p['base_path'],
+                                       p['corpus_path'],
+                                       p['corpus_name'] + p['word_ids_ext']))
 
 logging.info('load smal lee corpus and preprocess')
 with open(lee_corpus, 'r') as f:
