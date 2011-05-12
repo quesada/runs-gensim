@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-topic_noise.py
+
+correlate wikipedia article similarity with human perceived similarity of terms
 
 Created by Stephan Gabler on 2011-05-12.
 Copyright (c) 2011 __MyCompanyName__. All rights reserved.
