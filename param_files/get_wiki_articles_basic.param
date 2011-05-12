@@ -1,0 +1,5 @@
+
+
+base_path       = '/Users/dedan/projects/mpi/data/'
+folder_path     = 'corpora/sparql/queries/'
+result_path     = "results/"
