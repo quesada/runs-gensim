@@ -27,6 +27,7 @@ lee_corpus = p['base_path'] + p['lee_corpus']
 result_path = p['base_path'] + p['result_path']
 
 output_dir = os.path.join(result_path, p['sumatra_label'])
+#output_dir = os.path.join(result_path, 'label')
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
 
@@ -47,6 +48,7 @@ start = datetime.now()
 
 logger.info('loading word mapping')
 dictionary = Dictionary.loadFromText(working_corpus + p['word_ids_extension'])
+logger.info(dictionary)
 
 logger.info('loading corpus')
 corpus_bow = MmCorpus(working_corpus + '_bow.mm')
