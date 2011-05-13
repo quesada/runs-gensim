@@ -10,19 +10,16 @@ Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 import sys
 import os
 import mwclient
-import simplejson
 import glob
 import codecs
 import pickle
 import unicodedata as ud
 import logging
-from datetime import datetime
+import re
 
 from sumatra.parameters import build_parameters
 from gensim.corpora import wikicorpus
 from gensim.parsing.preprocessing import preprocess_string
-from urllib import FancyURLopener
-from BeautifulSoup import BeautifulStoneSoup as BSS
 
 # setup
 parameter_file = sys.argv[1]
@@ -44,9 +41,11 @@ logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 logger.info("running %s" % ' '.join(sys.argv))
 
-
+# initializations
 articles = {}
 all_missing = []
+redir_on = {}
+collisions = {}
 site = mwclient.Site('en.wikipedia.org', '/w/api.php/')
 
 # get all txt files in a folder and iterate over them
@@ -78,14 +77,30 @@ for f in filelist:
     for word in words:
         data = {}
         page = site.Pages[word]
+        
+        # follow the redirect and check for collisions
         if page.redirect:
-            data['redirected'] = True
+            res = re.search('\[\[(.+)\]\]', page.edit())
+            redir_word = res.groups()[0]
+            if redir_on.has_key(redir_word):
+                logger.warning("[%s AND %s] both redirect on --> %s" % 
+                                    (word, redir_on[redir_word], redir_word))
+                collisions[redir_word] = redir_on[redir_word]
+            else:
+                logger.info("[%s] redir from [%s]" % (redir_word, word))
+                redir_on[redir_word] = word
+            text = site.Pages[redir_word].edit()
+            data['redirected'] = redir_word
 
-        text = page.edit()
+        else:
+            text = page.edit()
+
+        # check for missing wikipedia articles
         if  text == "":
             all_missing.append(word)
             break
 
+        # preprocess the received article
         data['text'] = wikicorpus.filterWiki(text)
         in_ascii = ud.normalize('NFKD',
                                 data['text']).encode('ascii', 'ignore')
@@ -96,6 +111,12 @@ f = open(os.path.join(output_dir, "articles.pickle"), 'wb')
 pickle.dump(articles, f)
 f.close
 
-f = open(os.path.join(output_dir, "missing.pickle"), 'wb')
-pickle.dump(all_missing, f)
+info = {}
+info['missing'] = all_missing
+info['redirs'] = redir_on
+info['collisions'] = collisions
+f = open(os.path.join(output_dir, "info.pickle"), 'wb')
+pickle.dump(info, f)
 f.close
+
+logger.info("%d redirecting collisions (see info.pickle)" % len(collisions))
