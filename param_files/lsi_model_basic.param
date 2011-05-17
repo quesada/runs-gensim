@@ -3,6 +3,7 @@ num_topics          = 10
 word_ids_extension  = '_wordids.txt'
 pre_model_extension = 'pre.model'
 lsi_extension       = 'lsi.model'
+dict_extension      = 'dic.dict'
 
 # paths
 base_path       = '/mnt/Data/'

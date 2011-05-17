@@ -48,6 +48,7 @@ start = datetime.now()
 
 logger.info('loading word mapping')
 dictionary = Dictionary.loadFromText(working_corpus + p['word_ids_extension'])
+dictionary.save(os.path.join(output_dir, p['dict_extension']))
 logger.info(dictionary)
 
 logger.info('loading corpus')
