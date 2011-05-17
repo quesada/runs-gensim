@@ -29,7 +29,7 @@ from gensim import utils, similarities, matutils, models
 parameter_file = sys.argv[1]
 p = build_parameters(parameter_file)
 result_path = path.join(p['base_path'], p['result_path'])
-output_dir = path.join(result_path, 'test') #p['sumatra_label'])
+output_dir = path.join(result_path, p['sumatra_label'])
 lee_corpus = p['base_path'] + p['lee_corpus']
 if not path.exists(output_dir):
     os.mkdir(output_dir)
