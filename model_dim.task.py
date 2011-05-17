@@ -55,12 +55,14 @@ dictionary = Dictionary.load(path.join(result_path, p['run'], p['dict_extension'
 
 model_path = path.join(result_path, p['run'], p['lsi_ext'])
 logger.info('load model from: %s' % model_path)
-lsi = LsiModel.load(model_path)
+lsi = LsiModel(id2word=dictionary)
 if os.path.exists(path.join(result_path, p['run'], 'u.npy')):
     lsi.projection.u = np.load(path.join(result_path, p['run'], 'u.npy'))
     lsi.projection.s = np.load(path.join(result_path, p['run'], 's.npy'))
     lsi.numTerms = len(dictionary)
     lsi.numTopics = np.shape(lsi.projection.s)[0]
+else:
+    lsi = LsiModel.load(model_path)
 pre = SaveLoad.load(path.join(result_path, p['run'], p['pre_model_ext']))
 
 
