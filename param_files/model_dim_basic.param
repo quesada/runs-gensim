@@ -1,14 +1,14 @@
 # model from which run to take
-run = '20110429-143751'
+run = '20110517-110804'
 
 # configuration
-lsi_ext       = 'lsi.model'
-pre_model_ext = 'pre.model'
-word_ids_ext  = '_wordids.txt'
+lsi_ext         = 'lsi.model'
+pre_model_ext   = 'pre.model'
+dict_extension  = 'dic.dict'
 
 # dimensions
-min_dim     = 2
-dim_step    = 2
+min_dim     = 1
+dim_step    = 1
 
 # paths
 base_path       = '/Users/dedan/projects/mpi/data/'
