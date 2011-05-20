@@ -7,3 +7,5 @@ dict_path       = 'corpora/wiki/wiki-mar2008/head500.noblanks.cor_wordids.txt'
 human_file      = 'reference_queries.txt'
 model_label     = '20110429-143751'
 article_label   = 'test'
+
+num_topics      = 3

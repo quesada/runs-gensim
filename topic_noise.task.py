@@ -63,6 +63,7 @@ dictionary = Dictionary.loadFromText(path.join(p['base_path'], p['dict_path']))
 model_path = os.path.join(result_path, p['model_label'])
 lsi = pickle.load(open(os.path.join(model_path, 'lsi.model')))
 pre = pickle.load(open(os.path.join(model_path, 'pre.model')))
+lsi.numTopics = p['num_topics']
 
 # and get all the wikipedia articles
 article_path = os.path.join(result_path, p['article_label'])
