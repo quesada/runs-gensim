@@ -27,7 +27,7 @@ p = build_parameters(sys.argv[1])
 output_dir = os.path.join(p['base_path'], p['result_path'], p['sumatra_label'])
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
-logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
+logger = tools.get_logger('gensim', os.path.join(output_dir, "run.log"))
 logger.info("running %s" % ' '.join(sys.argv))
 
 # initializations
@@ -87,7 +87,7 @@ for f in filelist:
         # check for missing wikipedia articles
         if  text == "":
             all_missing.append(word)
-            break
+            continue
 
         # preprocess the received article
         data['text'] = wikicorpus.filterWiki(text)
