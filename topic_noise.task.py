@@ -5,7 +5,6 @@
 correlate wikipedia article similarity with human perceived similarity of terms
 
 Created by Stephan Gabler on 2011-05-12.
-Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 """
 
 import sys
@@ -16,8 +15,8 @@ import logging
 import string
 import pickle
 
-# import matplotlib
-# matplotlib.use("Agg")
+import matplotlib
+matplotlib.use("Agg")
 import numpy as np
 import pylab as plt
 import scipy.stats
@@ -35,7 +34,7 @@ def order(l, indices):
 parameter_file = sys.argv[1]
 p = build_parameters(parameter_file)
 result_path = path.join(p['base_path'], p['result_path'])
-output_dir = path.join(result_path, 'test1') #p['sumatra_label'])
+output_dir = path.join(result_path, p['sumatra_label'])
 if not path.exists(output_dir):
     os.mkdir(output_dir)
 
@@ -52,17 +51,15 @@ logger.setLevel(logging.DEBUG)
 logger.info("running %s" % ' '.join(sys.argv))
 
 
-# read in the id to word mapping
+logger.info('load the id to word mapping')
 id_word = {}
 with open(os.path.join(p['base_path'], p['sparql_path'], 'id_word.txt')) as f:
     for line in f.readlines():
         idx, word = line.strip().split('\t')
         id_word[idx] = word
 
-# read in model and dictionary
-logger.info('loading models')
-dictionary = Dictionary.loadFromText(os.path.join(p['base_path'],
-                                                  p['dict_path']))
+logger.info('loading models and dictionary')
+dictionary = Dictionary.loadFromText(path.join(p['base_path'], p['dict_path']))
 model_path = os.path.join(result_path, p['model_label'])
 lsi = pickle.load(open(os.path.join(model_path, 'lsi.model')))
 pre = pickle.load(open(os.path.join(model_path, 'pre.model')))
@@ -75,7 +72,7 @@ info = pickle.load(open(os.path.join(article_path, 'info.pickle')))
 not_found = []
 
 #add human rating to the wikipedia data
-with open('/Users/dedan/projects/mpi/data/corpora/sparql/reference_queries.txt') as f:
+with open(path.join(p['base_path'], p['sparql_path'], p['human_file'])) as f:
     for line in f.readlines():
         arr = line.split()
         word = id_word[arr[0]]
@@ -84,31 +81,21 @@ with open('/Users/dedan/projects/mpi/data/corpora/sparql/reference_queries.txt')
             wiki[word][term]['rating'] = int(arr[4])
         except KeyError:
             not_found.append(term)
-
 logger.info("%d words from the reference queries not found" % len(not_found))
 
-for query_key in wiki.keys():
+for query_key, query in wiki.iteritems():
     logger.info("working on: %s" % query_key)
-    query = wiki[query_key]
     n = len(query)
+    human = [val['rating'] for val in query.itervalues()]
     sim_res = np.zeros((n,n))
 
     for i, val1 in enumerate(query.itervalues()):
         for j, val2 in enumerate(query.itervalues()):
-    
             bow1 = dictionary.doc2bow(val1['text'])
             bow2 = dictionary.doc2bow(val2['text'])
             sim_res[i,j] = matutils.cossim(lsi[pre[bow1]], lsi[pre[bow2]])
     avg = np.mean(sim_res, axis=0)
     idx = np.argsort(avg)
-
-    human = []
-    for key in query.keys():
-        if query[key].has_key('rating'):
-            human.append(query[key]['rating'])
-        else:
-            logger.warning("%s has no rating" % key)
-    # human = [val['rating'] for val in query.itervalues()]
 
     # compute correlation with human rating
     res = np.zeros((n,2))
@@ -120,7 +107,7 @@ for query_key in wiki.keys():
         res[i,1] = p
 
     fig = plt.figure()
-    
+
     # plot correlation
     ax = fig.add_subplot(2,1,1)
     ax.plot(res)
@@ -133,7 +120,7 @@ for query_key in wiki.keys():
     # Set the x tick labels to the group_labels defined above and rotate labels
     ax.set_xticks(range(n))
     k = [key + ' ' + str(query[key]['rating']) for key in query.keys()]
-    ax.set_xticklabels(order(k, idx)) 
+    ax.set_xticklabels(order(k, idx))
     fig.autofmt_xdate()
 
     plt.savefig(os.path.join(output_dir, query_key + '.pdf'))
