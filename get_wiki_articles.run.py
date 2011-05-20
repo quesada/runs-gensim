@@ -16,29 +16,18 @@ import pickle
 import unicodedata as ud
 import logging
 import re
+import tools
 
 from sumatra.parameters import build_parameters
 from gensim.corpora import wikicorpus
 from gensim.parsing.preprocessing import preprocess_string
 
 # setup
-parameter_file = sys.argv[1]
-p = build_parameters(parameter_file)
-
+p = build_parameters(sys.argv[1])
 output_dir = os.path.join(p['base_path'], p['result_path'], p['sumatra_label'])
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
-
-# set up the logger to print to a file and stdout
-logger = logging.getLogger('gensim')
-file_handler = logging.FileHandler(os.path.join(output_dir, "run.log"), 'w')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-logger.setLevel(logging.DEBUG)
+logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
 logger.info("running %s" % ' '.join(sys.argv))
 
 # initializations

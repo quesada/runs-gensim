@@ -16,6 +16,7 @@ import numpy as np
 import pylab as plt
 import logging
 from datetime import datetime
+import tools
 
 from sumatra.parameters import build_parameters
 from gensim.models.lsimodel import LsiModel
@@ -26,24 +27,13 @@ from gensim import utils, similarities, matutils, models
 
 
 # read the parameters and create output folder
-parameter_file = sys.argv[1]
-p = build_parameters(parameter_file)
+p = build_parameters(sys.argv[1])
 result_path = path.join(p['base_path'], p['result_path'])
 output_dir = path.join(result_path, p['sumatra_label'])
 lee_corpus = p['base_path'] + p['lee_corpus']
 if not path.exists(output_dir):
     os.mkdir(output_dir)
-
-# set up the logger to print to a file and stdout
-logger = logging.getLogger('gensim')
-file_handler = logging.FileHandler(path.join(output_dir, "run.log"), 'w')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-logger.setLevel(logging.DEBUG)
+logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
 logger.info("running %s" % ' '.join(sys.argv))
 
 # remember starting time for runtime evaluation

@@ -8,13 +8,12 @@ Created by Stephan Gabler on 2011-05-12.
 """
 
 import sys
-import os
-from os import path
-import logging
+from os import path, mkdir
 
 import string
 import pickle
 
+import tools
 import matplotlib
 matplotlib.use("Agg")
 import numpy as np
@@ -24,55 +23,36 @@ from sumatra.parameters import build_parameters
 from gensim import models, matutils
 from gensim.corpora import Dictionary
 
-
-def order(l, indices):
-    """reorder a list according to the indices"""
-    return [l[i] for i in indices]
-
-
-# read the parameters and create output folder
-parameter_file = sys.argv[1]
-p = build_parameters(parameter_file)
+# read the parameters, create output folder and logger
+p = build_parameters(sys.argv[1])
 result_path = path.join(p['base_path'], p['result_path'])
 output_dir = path.join(result_path, p['sumatra_label'])
 if not path.exists(output_dir):
-    os.mkdir(output_dir)
-
-# set up the logger to print to a file and stdout
-logger = logging.getLogger('gensim')
-file_handler = logging.FileHandler(path.join(output_dir, "run.log"), 'w')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-logger.setLevel(logging.DEBUG)
+    mkdir(output_dir)
+logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
 logger.info("running %s" % ' '.join(sys.argv))
-
 
 logger.info('load the id to word mapping')
 id_word = {}
-with open(os.path.join(p['base_path'], p['sparql_path'], 'id_word.txt')) as f:
+with open(path.join(p['base_path'], p['sparql_path'], 'id_word.txt')) as f:
     for line in f.readlines():
         idx, word = line.strip().split('\t')
         id_word[idx] = word
 
 logger.info('loading models and dictionary')
 dictionary = Dictionary.loadFromText(path.join(p['base_path'], p['dict_path']))
-model_path = os.path.join(result_path, p['model_label'])
-lsi = pickle.load(open(os.path.join(model_path, 'lsi.model')))
-pre = pickle.load(open(os.path.join(model_path, 'pre.model')))
+model_path = path.join(result_path, p['model_label'])
+lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
+pre = pickle.load(open(path.join(model_path, 'pre.model')))
 lsi.numTopics = p['num_topics']
 
-# and get all the wikipedia articles
-article_path = os.path.join(result_path, p['article_label'])
-wiki = pickle.load(open(os.path.join(article_path, 'articles.pickle')))
-info = pickle.load(open(os.path.join(article_path, 'info.pickle')))
-
-not_found = []
+logger.info('load wikipedia articles')
+article_path = path.join(result_path, p['article_label'])
+wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
+info = pickle.load(open(path.join(article_path, 'info.pickle')))
 
 #add human rating to the wikipedia data
+not_found = []
 with open(path.join(p['base_path'], p['sparql_path'], p['human_file'])) as f:
     for line in f.readlines():
         arr = line.split()
@@ -107,9 +87,8 @@ for query_key, query in wiki.iteritems():
         res[i,0] = r
         res[i,1] = p
 
-    fig = plt.figure()
-
     # plot correlation
+    fig = plt.figure()
     ax = fig.add_subplot(2,1,1)
     ax.plot(res)
     ax.legend(['r', 'p'])
@@ -121,8 +100,7 @@ for query_key, query in wiki.iteritems():
     # Set the x tick labels to the group_labels defined above and rotate labels
     ax.set_xticks(range(n))
     k = [key + ' ' + str(query[key]['rating']) for key in query.keys()]
-    ax.set_xticklabels(order(k, idx))
+    ax.set_xticklabels([k[i] for i in idx])
     fig.autofmt_xdate()
-
-    plt.savefig(os.path.join(output_dir, query_key + '.pdf'))
+    plt.savefig(path.join(output_dir, query_key + '.pdf'))
     plt.close()
