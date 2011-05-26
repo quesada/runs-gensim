@@ -83,9 +83,9 @@ for query_key, query in wiki.iteritems():
     for i in range(n):
         human_r = [human[j] for j in sorted(idx[i:])]
         avg_r = [avg[j] for j in sorted(idx[i:])]
-        r, p = scipy.stats.pearsonr(human_r, avg_r)
+        r, p_v = scipy.stats.pearsonr(human_r, avg_r)
         res[i,0] = r
-        res[i,1] = p
+        res[i,1] = p_v
 
     # plot correlation
     fig = plt.figure()
@@ -102,5 +102,5 @@ for query_key, query in wiki.iteritems():
     k = [key + ' ' + str(query[key]['rating']) for key in query.keys()]
     ax.set_xticklabels([k[i] for i in idx])
     fig.autofmt_xdate()
-    plt.savefig(path.join(output_dir, query_key + '.pdf'))
+    plt.savefig(path.join(output_dir, query_key + '.' + p['format']))
     plt.close()
