@@ -66,13 +66,13 @@ for f in filelist:
     for word in words:
         data = {}
         page = site.Pages[word]
-        
+
         # follow the redirect and check for collisions
         if page.redirect:
             res = re.search('\[\[(.+)\]\]', page.edit())
             redir_word = res.groups()[0]
-            if redir_on.has_key(redir_word):
-                logger.warning("[%s AND %s] both redirect on --> %s" % 
+            if redir_word in redir_on:
+                logger.warning("[%s AND %s] both redirect on --> %s" %
                                     (word, redir_on[redir_word], redir_word))
                 collisions[redir_word] = redir_on[redir_word]
             else:
