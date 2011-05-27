@@ -28,7 +28,7 @@ from gensim.similarities.docsim import MatrixSimilarity
 # read the parameters, create output folder and logger
 p = build_parameters(sys.argv[1])
 result_path = path.join(p['base_path'], p['result_path'])
-output_dir = path.join(result_path, 'bla') #p['sumatra_label'])
+output_dir = path.join(result_path, p['sumatra_label'])
 if not path.exists(output_dir):
     mkdir(output_dir)
 logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
