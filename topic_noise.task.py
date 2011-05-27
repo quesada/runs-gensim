@@ -89,12 +89,16 @@ for query_key, query in wiki.iteritems():
 
     # plot correlation
     fig = plt.figure()
-    ax = fig.add_subplot(2,1,1)
+    ax = fig.add_subplot(3,1,1)
     ax.plot(res)
     ax.legend(['r', 'p'])
 
+    ax = fig.add_subplot(3,1,2)
+    ratings = [val['rating'] for val in query.itervalues()]
+    ax.scatter(avg[idx], [ratings[i] for i in idx])
+
     # plot similarity distribution
-    ax = fig.add_subplot(2,1,2)
+    ax = fig.add_subplot(3,1,3)
     ax.bar(range(n), avg[idx])
 
     # Set the x tick labels to the group_labels defined above and rotate labels
