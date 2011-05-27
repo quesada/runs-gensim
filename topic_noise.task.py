@@ -12,6 +12,7 @@ from os import path, mkdir
 
 import string
 import pickle
+import time
 
 import tools
 import matplotlib
@@ -22,11 +23,12 @@ import scipy.stats
 from sumatra.parameters import build_parameters
 from gensim import models, matutils
 from gensim.corpora import Dictionary
+from gensim.similarities.docsim import MatrixSimilarity
 
 # read the parameters, create output folder and logger
 p = build_parameters(sys.argv[1])
 result_path = path.join(p['base_path'], p['result_path'])
-output_dir = path.join(result_path, p['sumatra_label'])
+output_dir = path.join(result_path, 'bla') #p['sumatra_label'])
 if not path.exists(output_dir):
     mkdir(output_dir)
 logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
@@ -44,19 +46,20 @@ article_path = path.join(result_path, p['article_label'])
 wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
 info = pickle.load(open(path.join(article_path, 'info.pickle')))
 
+times = np.zeros((1,len(wiki)))
+count = 0
 for query_key, query in wiki.iteritems():
     logger.info("working on: %s" % query_key)
     n = len(query)
     human = [val['rating'] for val in query.itervalues()]
     sim_res = np.zeros((n,n))
 
-    for i, val1 in enumerate(query.itervalues()):
-        for j, val2 in enumerate(query.itervalues()):
-            bow1 = dictionary.doc2bow(val1['text'])
-            bow2 = dictionary.doc2bow(val2['text'])
-            sim_res[i,j] = matutils.cossim(lsi[pre[bow1]], lsi[pre[bow2]])
+    t0 = time.time()
+    corpus = [lsi[pre[dictionary.doc2bow(val['text'])]] for val in query.itervalues()]
+    sim_res = MatrixSimilarity(corpus)[corpus]
     avg = np.mean(sim_res, axis=0)
     idx = np.argsort(avg)
+    times[count] = time.time() - t0
 
     # compute correlation with human rating
     res = np.zeros((n,2))
@@ -88,3 +91,4 @@ for query_key, query in wiki.iteritems():
     fig.autofmt_xdate()
     plt.savefig(path.join(output_dir, query_key + '.' + p['format']))
     plt.close()
+logger.info('average similarity calculation time: %f' % np.mean(times))
