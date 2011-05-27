@@ -1,0 +1,7 @@
+base_path       = '/Users/dedan/projects/mpi/data/'
+result_path     = 'results/'
+model_label     = '20110429-143751'
+article_label   = '20110527-140603'
+dict_path       = 'corpora/wiki/wiki-mar2008/head500.noblanks.cor_wordids.txt'
+num_topics      = '10'
+format          = 'png'
