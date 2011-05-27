@@ -58,7 +58,7 @@ for topic, data in wiki.iteritems():
     vecs = np.squeeze(np.array(vecs)[:,:, 1:2]).T
 
     U, d, V = np.linalg.svd(vecs, full_matrices=False)
-    proj = np.dot(U[0:2,:], vecs)
+    proj = np.dot(U[:,0:2].T, vecs)
 
     plt.figure()
     plt.subplot(2,1,1)
