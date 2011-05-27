@@ -2,4 +2,6 @@
 
 base_path       = '/Users/dedan/projects/mpi/data/'
 folder_path     = 'corpora/sparql/queries/'
-result_path     = "results/"
+result_path     = 'results/'
+sparql_path     = 'corpora/sparql/'
+human_file      = 'reference_queries.txt'

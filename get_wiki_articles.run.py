@@ -96,6 +96,26 @@ for f in filelist:
         data['text'] = preprocess_string(in_ascii)
         articles[k_word][word] = data
 
+logger.info('add human rating to the articles')
+id_word = {}
+with open(os.path.join(p['base_path'], p['sparql_path'], 'id_word.txt')) as f:
+    for line in f.readlines():
+        idx, word = line.strip().split('\t')
+        id_word[idx] = word
+
+#add human rating to the wikipedia data
+not_found = []
+with open(os.path.join(p['base_path'], p['sparql_path'], p['human_file'])) as f:
+    for line in f.readlines():
+        arr = line.split()
+        word = id_word[arr[0]]
+        term = arr[3]
+        try:
+            articles[word][term]['rating'] = int(arr[4])
+        except KeyError:
+            not_found.append(term)
+logger.info("%d words from the reference queries not found" % len(not_found))
+
 f = open(os.path.join(output_dir, "articles.pickle"), 'wb')
 pickle.dump(articles, f)
 f.close
@@ -104,6 +124,7 @@ info = {}
 info['missing'] = all_missing
 info['redirs'] = redir_on
 info['collisions'] = collisions
+info['not_found'] = not_found
 f = open(os.path.join(output_dir, "info.pickle"), 'wb')
 pickle.dump(info, f)
 f.close

@@ -32,13 +32,6 @@ if not path.exists(output_dir):
 logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
 logger.info("running %s" % ' '.join(sys.argv))
 
-logger.info('load the id to word mapping')
-id_word = {}
-with open(path.join(p['base_path'], p['sparql_path'], 'id_word.txt')) as f:
-    for line in f.readlines():
-        idx, word = line.strip().split('\t')
-        id_word[idx] = word
-
 logger.info('loading models and dictionary')
 dictionary = Dictionary.loadFromText(path.join(p['base_path'], p['dict_path']))
 model_path = path.join(result_path, p['model_label'])
@@ -50,19 +43,6 @@ logger.info('load wikipedia articles')
 article_path = path.join(result_path, p['article_label'])
 wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
 info = pickle.load(open(path.join(article_path, 'info.pickle')))
-
-#add human rating to the wikipedia data
-not_found = []
-with open(path.join(p['base_path'], p['sparql_path'], p['human_file'])) as f:
-    for line in f.readlines():
-        arr = line.split()
-        word = id_word[arr[0]]
-        term = arr[3]
-        try:
-            wiki[word][term]['rating'] = int(arr[4])
-        except KeyError:
-            not_found.append(term)
-logger.info("%d words from the reference queries not found" % len(not_found))
 
 for query_key, query in wiki.iteritems():
     logger.info("working on: %s" % query_key)
