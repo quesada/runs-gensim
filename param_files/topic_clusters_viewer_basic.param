@@ -1,0 +1,3 @@
+base_path       = '/Users/dedan/projects/mpi/data/'
+result_path     = 'results/'
+data_label      = 'bla'
