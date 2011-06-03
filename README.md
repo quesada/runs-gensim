@@ -43,3 +43,7 @@ The task uses the serializations that a run produces. They are bound together,
 so if something changed in the run, expect your task to produce different
 results (!). We want to prevent that by accident we run tasks with the wrong
 space, and for that we use sumatra.
+
+VIEW
+==============================================
+A view is used to visualize data that was computed in a TASK or a RUN. The concept was introduced because some TASKs create data which needs to be explored interactively but a X-Window session is not always possible. Usually tasks are computed on a remote server (because only there all the data is available). This result can then be transferred to a local machine where the results can be visualized.
