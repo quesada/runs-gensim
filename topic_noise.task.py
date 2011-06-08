@@ -62,19 +62,15 @@ for query_key, query in wiki.iteritems():
     times[count] = time.time() - t0
 
     # compute correlation with human rating
-    res = np.zeros((n,2))
+    res = np.zeros((n,1))
     for i in range(n):
-        human_r = [human[j] for j in sorted(idx[i:])]
-        avg_r = [avg[j] for j in sorted(idx[i:])]
-        r, p_v = scipy.stats.pearsonr(human_r, avg_r)
-        res[i,0] = r
-        res[i,1] = p_v
+        human_r = [human[j] for j in idx[i:]]
+        res[i,0] = np.mean(human_r)
 
     # plot correlation
     fig = plt.figure()
     ax = fig.add_subplot(3,1,1)
     ax.plot(res)
-    ax.legend(['r', 'p'])
 
     ax = fig.add_subplot(3,1,2)
     ratings = [val['rating'] for val in query.itervalues()]
