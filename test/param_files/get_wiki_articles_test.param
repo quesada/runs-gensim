@@ -1,7 +1,8 @@
 
 
-base_path       = '/Users/dedan/projects/mpi/data/'
+base_path       = './test/data/'
 folder_path     = 'corpora/sparql/queries/'
 result_path     = 'results/'
 sparql_path     = 'corpora/sparql/'
 human_file      = 'reference_queries.txt'
+sumatra_label 	= 'test'
