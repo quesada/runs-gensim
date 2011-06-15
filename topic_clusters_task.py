@@ -10,55 +10,66 @@ for clusters. This script only saves the cluster data to a file which can
 then be visualized with the corresponding viewer.
 """
 
-import sys
-import os
-from os import path
-import pickle
-
-import numpy as np
 from gensim.corpora import Dictionary
+from os import path
 from sumatra.parameters import build_parameters
+import numpy as np
+import os
+import pickle
+import sys
 import tools
 
-# setup
-p = build_parameters(sys.argv[1])
-result_path = path.join(p['base_path'], p['result_path'])
-output_dir = path.join(result_path, p['sumatra_label'])
-if not path.exists(output_dir):
-    os.mkdir(output_dir)
-logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
-logger.info("running %s" % ' '.join(sys.argv))
 
-logger.info('load the articles..')
-article_path = path.join(result_path, p['article_label'])
-wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
+def main(param_file=None):
 
-logger.info('load dictionary and models')
-dictionary = Dictionary.loadFromText(path.join(p['base_path'], p['dict_path']))
-model_path = path.join(result_path, p['model_label'])
-lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
-pre = pickle.load(open(path.join(model_path, 'pre.model')))
-if int(p['num_topics']) > lsi.numTopics:
-    logger.error('model to small')
-lsi.numTopics = int(p['num_topics'])
+    # setup
+    if param_file:
+        p = build_parameters(param_file)
+        base_path = path.join(path.dirname(__file__), 'test', 'data')
+    else:
+        p = build_parameters(sys.argv[1])
+        base_path = p['base_path']
+    result_path = path.join(base_path, p['result_path'])
+    output_dir = path.join(result_path, p['sumatra_label'])
+    if not path.exists(output_dir):
+        os.mkdir(output_dir)
+    logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
+    logger.info("running %s" % ' '.join(sys.argv))
 
-data = {}
-for topic, entries in wiki.iteritems():
-    logger.info('working on: %s' % topic)
+    logger.info('load the articles..')
+    article_path = path.join(result_path, p['article_label'])
+    wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
 
-    data[topic] = {}
-    data[topic]['keys'] = []
-    data[topic]['vecs'] = []
-    data[topic]['ratings'] = []
-    for key, val in entries.iteritems():
-        data[topic]['keys'].append(key)
-        data[topic]['vecs'].append(lsi[pre[dictionary.doc2bow(val['text'])]])
-        data[topic]['ratings'].append(val['rating'])
-    data[topic]['vecs'] = np.squeeze(np.array(data[topic]['vecs'])[:,:, 1:2]).T
+    logger.info('load dictionary and models')
+    dictionary = Dictionary.load(path.join(result_path, p['dict_label'], p['dict_extension']))
+    model_path = path.join(result_path, p['model_label'])
+    lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
+    pre = pickle.load(open(path.join(model_path, 'pre.model')))
+    if int(p['num_topics']) > lsi.num_topics:
+        logger.error('model to small')
+    lsi.num_topics = int(p['num_topics'])
 
-    U, d, V = np.linalg.svd(data[topic]['vecs'], full_matrices=False)
-    data[topic]['U'] = U
-    data[topic]['d'] = d
+    data = {}
+    for topic, entries in wiki.iteritems():
+        logger.info('working on: %s' % topic)
 
-f = open(os.path.join(output_dir, "data.pickle"), 'wb')
-pickle.dump(data, f)
+        data[topic] = {}
+        data[topic]['keys'] = []
+        data[topic]['vecs'] = []
+        data[topic]['ratings'] = []
+        for key, val in entries.iteritems():
+            data[topic]['keys'].append(key)
+            data[topic]['vecs'].append(lsi[pre[dictionary.doc2bow(val['text'])]])
+            data[topic]['ratings'].append(val['rating'])
+        data[topic]['vecs'] = np.squeeze(np.array(data[topic]['vecs'])[:,:, 1:2]).T
+
+        U, d, _ = np.linalg.svd(data[topic]['vecs'], full_matrices=False)
+        data[topic]['U'] = U
+        data[topic]['d'] = d
+
+    f = open(os.path.join(output_dir, "data.pickle"), 'wb')
+    pickle.dump(data, f)
+
+if __name__ == '__main__':
+    main()
+

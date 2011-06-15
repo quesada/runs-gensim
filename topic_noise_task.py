@@ -7,84 +7,90 @@ correlate wikipedia article similarity with human perceived similarity of terms
 Created by Stephan Gabler on 2011-05-12.
 """
 
-import sys
-from os import path, mkdir
-
-import string
-import pickle
-import time
-
-import tools
-import matplotlib
-matplotlib.use("Agg")
-import numpy as np
-import pylab as plt
-import scipy.stats
-from sumatra.parameters import build_parameters
 from gensim import models, matutils
 from gensim.corpora import Dictionary
 from gensim.similarities.docsim import MatrixSimilarity
+from os import path, mkdir
+from sumatra.parameters import build_parameters
+import matplotlib
+import numpy as np
+import pickle
+import pylab as plt
+import sys
+import time
+import tools
+matplotlib.use("Agg")
 
-# read the parameters, create output folder and logger
-p = build_parameters(sys.argv[1])
-result_path = path.join(p['base_path'], p['result_path'])
-output_dir = path.join(result_path, p['sumatra_label'])
-if not path.exists(output_dir):
-    mkdir(output_dir)
-logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
-logger.info("running %s" % ' '.join(sys.argv))
+def main(param_file=None):
 
-logger.info('loading models and dictionary')
-dictionary = Dictionary.loadFromText(path.join(p['base_path'], p['dict_path']))
-model_path = path.join(result_path, p['model_label'])
-lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
-pre = pickle.load(open(path.join(model_path, 'pre.model')))
-lsi.numTopics = p['num_topics']
+    # setup
+    if param_file:
+        p = build_parameters(param_file)
+        base_path = path.join(path.dirname(__file__), 'test', 'data')
+    else:
+        p = build_parameters(sys.argv[1])
+        base_path = p['base_path']
+    result_path = path.join(base_path, p['result_path'])
+    output_dir = path.join(result_path, p['sumatra_label'])
+    if not path.exists(output_dir):
+        mkdir(output_dir)
+    logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
+    logger.info("running %s" % ' '.join(sys.argv))
 
-logger.info('load wikipedia articles')
-article_path = path.join(result_path, p['article_label'])
-wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
-info = pickle.load(open(path.join(article_path, 'info.pickle')))
+    logger.info('loading models and dictionary')
+    dictionary = Dictionary.load(path.join(result_path, p['dict_label'], p['dict_extension']))
+    model_path = path.join(result_path, p['model_label'])
+    lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
+    pre = pickle.load(open(path.join(model_path, 'pre.model')))
+    lsi.numTopics = p['num_topics']
 
-times = np.zeros((1,len(wiki)))
-count = 0
-for query_key, query in wiki.iteritems():
-    logger.info("working on: %s" % query_key)
-    n = len(query)
-    human = [val['rating'] for val in query.itervalues()]
-    sim_res = np.zeros((n,n))
+    logger.info('load wikipedia articles')
+    article_path = path.join(result_path, p['article_label'])
+    wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
 
-    t0 = time.time()
-    corpus = [lsi[pre[dictionary.doc2bow(val['text'])]] for val in query.itervalues()]
-    sim_res = MatrixSimilarity(corpus)[corpus]
-    avg = np.mean(sim_res, axis=0)
-    idx = np.argsort(avg)
-    times[count] = time.time() - t0
+    times = np.zeros((1,len(wiki)))
+    count = 0
+    for query_key, query in wiki.iteritems():
+        logger.info("working on: %s" % query_key)
+        n = len(query)
+        human = [val['rating'] for val in query.itervalues()]
+        sim_res = np.zeros((n,n))
 
-    # compute correlation with human rating
-    res = np.zeros((n,1))
-    for i in range(n):
-        human_r = [human[j] for j in idx[i:]]
-        res[i,0] = np.mean(human_r)
+        t0 = time.time()
+        corpus = [lsi[pre[dictionary.doc2bow(val['text'])]] for val in query.itervalues()]
+        sim_res = MatrixSimilarity(corpus)[corpus]
+        avg = np.mean(sim_res, axis=0)
+        idx = np.argsort(avg)
+        times[count] = time.time() - t0
 
-    # plot correlation
-    fig = plt.figure()
-    ax = fig.add_subplot(3,1,1)
-    ax.plot(res)
+        # compute correlation with human rating
+        res = np.zeros((n,1))
+        for i in range(n):
+            human_r = [human[j] for j in idx[i:]]
+            res[i,0] = np.mean(human_r)
 
-    ax = fig.add_subplot(3,1,2)
-    ratings = [val['rating'] for val in query.itervalues()]
-    ax.scatter(avg[idx], [ratings[i] for i in idx])
+        # plot correlation
+        fig = plt.figure()
+        ax = fig.add_subplot(3,1,1)
+        ax.plot(res)
 
-    # plot similarity distribution
-    ax = fig.add_subplot(3,1,3)
-    ax.bar(range(n), avg[idx])
+        ax = fig.add_subplot(3,1,2)
+        ratings = [val['rating'] for val in query.itervalues()]
+        ax.scatter(avg[idx], [ratings[i] for i in idx])
 
-    # Set the x tick labels to the group_labels defined above and rotate labels
-    ax.set_xticks(range(n))
-    k = [key + ' ' + str(query[key]['rating']) for key in query.keys()]
-    ax.set_xticklabels([k[i] for i in idx])
-    fig.autofmt_xdate()
-    plt.savefig(path.join(output_dir, query_key + '.' + p['format']))
-    plt.close()
-logger.info('average similarity calculation time: %f' % np.mean(times))
+        # plot similarity distribution
+        ax = fig.add_subplot(3,1,3)
+        ax.bar(range(n), avg[idx])
+
+        # Set the x tick labels to the group_labels defined above and rotate labels
+        ax.set_xticks(range(n))
+        k = [key + ' ' + str(query[key]['rating']) for key in query.keys()]
+        ax.set_xticklabels([k[i] for i in idx])
+        fig.autofmt_xdate()
+        plt.savefig(path.join(output_dir, query_key + '.' + p['format']))
+        plt.close()
+    logger.info('average similarity calculation time: %f' % np.mean(times))
+
+if __name__ == '__main__':
+    main()
+
