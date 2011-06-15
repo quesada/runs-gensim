@@ -3,32 +3,14 @@ Created on 15.06.2011
 
 @author: dedan
 '''
-from os import path
-import lsi_model_run
-import shutil
 from nose.tools import assert_true
+from os import path
 import model_dim_task
 
-def setUp(self):
-    global out_dir
-    lsi_param_file = path.join('test',
-                               'param_files',
-                               'lsi_model_test.param')
-    dim_param_file = path.join('test',
-                               'param_files',
-                               'model_dim_test.param')
-    out_dir = path.join('test',
-                        'data',
-                        'results',
-                        'test')
-    lsi_model_run.main(lsi_param_file)
-    model_dim_task.main(dim_param_file)
-
-
-def tearDown(self):
-    global out_dir
-#    shutil.rmtree(out_dir)
-
+out_dir = path.join(path.dirname(__file__),
+                    'data',
+                    'results',
+                    'test')
 
 def test_output_exists():
     """test whether all output files were created"""
