@@ -12,6 +12,7 @@ out_dir = path.join(path.dirname(__file__),
                     'results',
                     'test')
 
+
 def test_output_exists():
     """test whether all output files were created"""
     global out_dir
@@ -22,6 +23,7 @@ def test_output_exists():
     assert_true(path.exists(path.join(out_dir, 's.npy')))
     assert_true(path.exists(path.join(out_dir, 'u.npy')))
 
+
 def test_cor_plot_exits():
     """check whether output of model_dim_task exists"""
     global out_dir
@@ -30,6 +32,3 @@ def test_cor_plot_exits():
                                'model_dim_test.param')
     model_dim_task.main(dim_param_file)
     assert_true(path.exists(path.join(out_dir, 'cor_plot.png')))
-
-
-

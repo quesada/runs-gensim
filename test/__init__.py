@@ -33,4 +33,3 @@ def teardown_package():
     """remove all the data created in the runs"""
     global out_dir
     shutil.rmtree(out_dir)
-

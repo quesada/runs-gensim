@@ -143,7 +143,7 @@ def main(param_file=None):
     pickle.dump(info, f)
     f.close
 
-    logger.info("%d redirecting collisions (see info.pickle)" % len(collisions))
+    logger.info("%d redirecting collisions (see info.pkl)" % len(collisions))
 
 if __name__ == '__main__':
     main()

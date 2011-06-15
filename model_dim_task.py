@@ -48,7 +48,8 @@ def main(param_file=None):
 
     # load model and corpus
     logger.info('loading word mapping')
-    dictionary = Dictionary.load(path.join(result_path, p['run'], p['dict_extension']))
+    dictionary = Dictionary.load(path.join(result_path,
+                                           p['run'], p['dict_extension']))
 
     model_path = path.join(result_path, p['run'], p['lsi_ext'])
     logger.info('load model from: %s' % model_path)
@@ -61,7 +62,6 @@ def main(param_file=None):
     else:
         lsi = LsiModel.load(model_path)
     pre = SaveLoad.load(path.join(result_path, p['run'], p['pre_model_ext']))
-
 
     logging.info('load smal lee corpus and preprocess')
     with open(lee_corpus, 'r') as f:
@@ -114,4 +114,3 @@ def main(param_file=None):
 
 if __name__ == '__main__':
     main()
-

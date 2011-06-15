@@ -41,7 +41,9 @@ def main(param_file=None):
     wiki = pickle.load(open(path.join(article_path, 'articles.pickle')))
 
     logger.info('load dictionary and models')
-    dictionary = Dictionary.load(path.join(result_path, p['dict_label'], p['dict_extension']))
+    dictionary = Dictionary.load(path.join(result_path,
+                                           p['dict_label'],
+                                           p['dict_extension']))
     model_path = path.join(result_path, p['model_label'])
     lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
     pre = pickle.load(open(path.join(model_path, 'pre.model')))
@@ -55,13 +57,13 @@ def main(param_file=None):
 
         data[topic] = {}
         data[topic]['keys'] = []
-        data[topic]['vecs'] = []
+        vecs = []
         data[topic]['ratings'] = []
         for key, val in entries.iteritems():
             data[topic]['keys'].append(key)
-            data[topic]['vecs'].append(lsi[pre[dictionary.doc2bow(val['text'])]])
+            vecs.append(lsi[pre[dictionary.doc2bow(val['text'])]])
             data[topic]['ratings'].append(val['rating'])
-        data[topic]['vecs'] = np.squeeze(np.array(data[topic]['vecs'])[:,:, 1:2]).T
+        data[topic]['vecs'] = np.squeeze(np.array(vecs)[:, :, 1:2]).T
 
         U, d, _ = np.linalg.svd(data[topic]['vecs'], full_matrices=False)
         data[topic]['U'] = U
@@ -72,4 +74,3 @@ def main(param_file=None):
 
 if __name__ == '__main__':
     main()
-

@@ -43,7 +43,8 @@ def main(param_file=None):
     start = datetime.now()
 
     logger.info('loading word mapping')
-    dictionary = Dictionary.load_from_text(working_corpus + p['word_ids_extension'])
+    dictionary = Dictionary.load_from_text(working_corpus +
+                                           p['word_ids_extension'])
     dictionary.save(os.path.join(output_dir, p['dict_extension']))
     logger.info(dictionary)
 
@@ -52,19 +53,22 @@ def main(param_file=None):
 
     logger.info("create preprocessing model and save it to disk")
     if p['pre_model'] == 'tfidf':
-        pre_model = TfidfModel(corpus_bow, id2word=dictionary, normalize = True)
+        pre_model = TfidfModel(corpus_bow, id2word=dictionary, normalize=True)
     elif p['pre_model'] == 'log_ent':
-        pre_model = LogEntropyModel(corpus_bow, id2word=dictionary, normalize = True)
+        pre_model = LogEntropyModel(corpus_bow,
+                                    id2word=dictionary, normalize=True)
     else:
         raise ValueError('model parameter %s not known' % p['pre_model'])
     pre_model.save(os.path.join(output_dir, p['pre_model_extension']))
 
     logger.info('initialize LSI model')
-    lsi = models.LsiModel(pre_model[corpus_bow], id2word=dictionary, num_topics=p['num_topics'])
+    lsi = models.LsiModel(pre_model[corpus_bow],
+                          id2word=dictionary, num_topics=p['num_topics'])
     np.save(os.path.join(output_dir, 'u.npy'), lsi.projection.u)
     np.save(os.path.join(output_dir, 's.npy'), lsi.projection.s)
     lsi.save(os.path.join(output_dir, p['lsi_extension']))
-    logger.info('finished --> lsi model saved to: %s' % os.path.join(output_dir, p['lsi_extension']))
+    logger.info('finished --> lsi model saved to: %s' %
+                os.path.join(output_dir, p['lsi_extension']))
 
     # check for correlation with lee human data
     logger.info('load smal lee corpus and preprocess')
@@ -92,7 +96,7 @@ def main(param_file=None):
 
     # compute correlations
     cor = np.corrcoef(sim_vector, human_sim_vector)
-    logger.info("correlation with lee human data: %f" %  cor[0, 1])
+    logger.info("correlation with lee human data: %f" % cor[0, 1])
 
     dif = start - datetime.now()
     logger.info("finished after %d days and %d secs" % (dif.days, dif.seconds))
@@ -100,4 +104,3 @@ def main(param_file=None):
 
 if __name__ == '__main__':
     main()
-
