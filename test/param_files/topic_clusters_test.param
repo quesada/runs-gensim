@@ -1,7 +1,12 @@
-base_path       = '/Users/dedan/projects/mpi/data/'
+dict_extension  = 'dic.dict'
+
+
+base_path       = './test/data/'
 result_path     = 'results/'
-model_label     = '20110429-143751'
-article_label   = '20110527-140603'
-dict_path       = 'corpora/wiki/wiki-mar2008/head500.noblanks.cor_wordids.txt'
+model_label     = 'test'
+article_label   = 'test'
+dict_label		= 'test'
 num_topics      = '10'
 format          = 'png'
+
+sumatra_label 	= 'test'
