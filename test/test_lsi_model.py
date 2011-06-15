@@ -43,6 +43,10 @@ def test_output_exists():
 def test_cor_plot_exits():
     """check whether output of model_dim_task exists"""
     global out_dir
+    dim_param_file = path.join(path.dirname(__file__),
+                               'param_files',
+                               'model_dim_test.param')
+    model_dim_task.main(dim_param_file)
     assert_true(path.exists(path.join(out_dir, 'cor_plot.png')))
 
 

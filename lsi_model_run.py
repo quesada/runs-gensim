@@ -24,12 +24,14 @@ def main(param_file=None):
     # setup
     if param_file:
         p = build_parameters(param_file)
+        base_path = path.join(path.dirname(__file__), 'test', 'data')
     else:
         p = build_parameters(sys.argv[1])
-    working_corpus = p['base_path'] + p['corpus_path'] + p['corpus_name']
-    human_data_file = p['base_path'] + p['human_data_file']
-    lee_corpus = p['base_path'] + p['lee_corpus']
-    result_path = p['base_path'] + p['result_path']
+        base_path = p['base_path']
+    working_corpus = path.join(base_path, p['corpus_path'], p['corpus_name'])
+    human_data_file = path.join(base_path, p['human_data_file'])
+    lee_corpus = path.join(base_path, p['lee_corpus'])
+    result_path = path.join(base_path, p['result_path'])
 
     output_dir = path.join(result_path, p['sumatra_label'])
     if not path.exists(output_dir):

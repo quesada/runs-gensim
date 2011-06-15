@@ -20,6 +20,7 @@ import sys
 import tools
 import unicodedata as ud
 import urllib
+from os import path
 
 
 def main(param_file=None):
@@ -27,9 +28,11 @@ def main(param_file=None):
     # setup
     if param_file:
         p = build_parameters(param_file)
+        base_path = path.join(path.dirname(__file__), 'test', 'data')
     else:
         p = build_parameters(sys.argv[1])
-    output_dir = os.path.join(p['base_path'],
+        base_path = p['base_path']
+    output_dir = os.path.join(base_path,
                               p['result_path'],
                               p['sumatra_label'])
     if not os.path.exists(output_dir):
@@ -46,7 +49,7 @@ def main(param_file=None):
     site = mwclient.Site('en.wikipedia.org', '/w/api.php/')
 
     # get all txt files in a folder and iterate over them
-    filelist = glob.glob(os.path.join(p['base_path'],
+    filelist = glob.glob(os.path.join(base_path,
                                       p['folder_path'],
                                       "*.txt"))
     for f in filelist:
@@ -107,7 +110,7 @@ def main(param_file=None):
 
     logger.info('add human rating to the articles')
     id_word = {}
-    sparql_path = os.path.join(p['base_path'], p['sparql_path'])
+    sparql_path = os.path.join(base_path, p['sparql_path'])
     with open(os.path.join(sparql_path, 'id_word.txt')) as f:
         for line in f.readlines():
             idx, word = line.strip().split('\t')

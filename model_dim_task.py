@@ -31,11 +31,13 @@ def main(param_file=None):
     # setup
     if param_file:
         p = build_parameters(param_file)
+        base_path = path.join(path.dirname(__file__), 'test', 'data')
     else:
         p = build_parameters(sys.argv[1])
-    result_path = path.join(p['base_path'], p['result_path'])
+        base_path = p['base_path']
+    result_path = path.join(base_path, p['result_path'])
     output_dir = path.join(result_path, p['sumatra_label'])
-    lee_corpus = p['base_path'] + p['lee_corpus']
+    lee_corpus = path.join(base_path, p['lee_corpus'])
     if not path.exists(output_dir):
         os.mkdir(output_dir)
     logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
@@ -73,7 +75,7 @@ def main(param_file=None):
     corpus_pre = pre[bow_lee_texts]
 
     # read the human similarity data and flatten upper triangular
-    human_sim_matrix = np.loadtxt(p['base_path'] + p['human_data_file'])
+    human_sim_matrix = np.loadtxt(path.join(base_path, p['human_data_file']))
     sim_m_size = np.shape(human_sim_matrix)[0]
     human_sim_vector = human_sim_matrix[np.triu_indices(sim_m_size, 1)]
 
