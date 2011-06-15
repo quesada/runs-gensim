@@ -1,3 +1,7 @@
 data
 .smt
 *.pyc
+.project
+.pydevproject
+.settings/*
+param_files/*
