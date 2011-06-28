@@ -18,7 +18,6 @@ import logging
 from datetime import datetime
 import tools
 
-from sumatra.parameters import build_parameters
 from gensim.models.lsimodel import LsiModel
 from gensim.utils import SaveLoad
 from gensim.parsing import preprocessing
@@ -29,17 +28,9 @@ from gensim import utils, similarities, matutils, models
 def main(param_file=None):
 
     # setup
-    if param_file:
-        p = build_parameters(param_file)
-        base_path = path.join(path.dirname(__file__), 'test', 'data')
-    else:
-        p = build_parameters(sys.argv[1])
-        base_path = p['base_path']
+    p, base_path, output_dir = tools.setup(param_file)
     result_path = path.join(base_path, p['result_path'])
-    output_dir = path.join(result_path, p['sumatra_label'])
     lee_corpus = path.join(base_path, p['lee_corpus'])
-    if not path.exists(output_dir):
-        os.mkdir(output_dir)
     logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
     logger.info("running %s" % ' '.join(sys.argv))
 

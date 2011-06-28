@@ -9,7 +9,6 @@ Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 
 from gensim.corpora import wikicorpus
 from gensim.parsing.preprocessing import preprocess_string
-from sumatra.parameters import build_parameters
 import codecs
 import glob
 import mwclient
@@ -20,23 +19,12 @@ import sys
 import tools
 import unicodedata as ud
 import urllib
-from os import path
 
 
 def main(param_file=None):
 
     # setup
-    if param_file:
-        p = build_parameters(param_file)
-        base_path = path.join(path.dirname(__file__), 'test', 'data')
-    else:
-        p = build_parameters(sys.argv[1])
-        base_path = p['base_path']
-    output_dir = os.path.join(base_path,
-                              p['result_path'],
-                              p['sumatra_label'])
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    p, base_path, output_dir = tools.setup(param_file)
     logger = tools.get_logger('gensim', os.path.join(output_dir, "run.log"))
     logger.info("running %s" % ' '.join(sys.argv))
 

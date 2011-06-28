@@ -3,7 +3,11 @@
 some functions I need for almost all tasks or runs
 """
 
+from os import path
+from sumatra.parameters import build_parameters
 import logging
+import os
+import sys
 
 
 def get_logger(module, fname):
@@ -22,3 +26,17 @@ def get_logger(module, fname):
         logger.addHandler(console_handler)
     logger.setLevel(logging.DEBUG)
     return logger
+
+def setup(param_file=None):
+    if param_file:
+        p = build_parameters(param_file)
+        base_path = path.join(path.dirname(__file__), 'test', 'data')
+    else:
+        p = build_parameters(sys.argv[1])
+        base_path = p['base_path']
+    output_dir = path.join(base_path,
+                              p['result_path'],
+                              p['sumatra_label'])
+    if not path.exists(output_dir):
+        os.mkdir(output_dir)
+    return p, base_path, output_dir

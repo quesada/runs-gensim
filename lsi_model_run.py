@@ -12,7 +12,6 @@ from gensim.models.logentropy_model import LogEntropyModel
 from gensim.models.tfidfmodel import TfidfModel
 from gensim.parsing import preprocessing
 from os import path
-from sumatra.parameters import build_parameters
 import numpy as np
 import os
 import sys
@@ -22,20 +21,10 @@ import tools
 def main(param_file=None):
 
     # setup
-    if param_file:
-        p = build_parameters(param_file)
-        base_path = path.join(path.dirname(__file__), 'test', 'data')
-    else:
-        p = build_parameters(sys.argv[1])
-        base_path = p['base_path']
+    p, base_path, output_dir = tools.setup(param_file)
     working_corpus = path.join(base_path, p['corpus_path'], p['corpus_name'])
     human_data_file = path.join(base_path, p['human_data_file'])
     lee_corpus = path.join(base_path, p['lee_corpus'])
-    result_path = path.join(base_path, p['result_path'])
-
-    output_dir = path.join(result_path, p['sumatra_label'])
-    if not path.exists(output_dir):
-        os.mkdir(output_dir)
     logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
     logger.info("running %s" % ' '.join(sys.argv))
 
