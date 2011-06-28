@@ -8,6 +8,7 @@ from sumatra.parameters import build_parameters
 import logging
 import os
 import sys
+import gensim
 
 
 def get_logger(module, fname):
@@ -16,6 +17,9 @@ def get_logger(module, fname):
     standard log level is debug
     """
     logger = logging.getLogger(module)
+    # remove the NullHandler
+    if len(logger.handlers) == 1:
+        logger.removeHandler(logger.handlers[0])
     if len(logger.handlers) == 0:
         file_handler = logging.FileHandler(fname, 'w')
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
