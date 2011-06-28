@@ -18,10 +18,10 @@ def main(param_file=None):
     logger.info("running %s" % ' '.join(sys.argv))
 
     cor = JsonCorpus(path.join(base_path, p['wiki_json']),
-                     p['no_below'],
-                     p['no_above'])
-    MmCorpus.serialize(path.join(output_dir, 'corpus.mm'), cor, progress_cnt=10000)
-    cor.dictionary.save(path.join(output_dir, 'dic.dict'))
+                     no_below=p['no_below'],
+                     no_above=p['no_above'])
+    MmCorpus.serialize(path.join(output_dir, p['corpus_name']), cor, progress_cnt=10000)
+    cor.dictionary.save(path.join(output_dir, p['dict_name']))
 
 
 
