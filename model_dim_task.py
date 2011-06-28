@@ -73,7 +73,7 @@ def main(param_file=None):
     for k, l in enumerate(iter_range):
 
         # do the lower dimensionality transformation
-        lsi.numTopics = l
+        lsi.num_topics = l
         corpus_lsi = lsi[corpus_pre]
 
         # compute pairwise similarity matrix of transformed corpus
