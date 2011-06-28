@@ -9,6 +9,7 @@ Created by Stephan Gabler on 2011-05-12.
 
 from gensim import models, matutils
 from gensim.corpora import Dictionary
+from gensim.gensim.models.lsimodel import LsiModel
 from gensim.similarities.docsim import MatrixSimilarity
 from os import path, mkdir
 from sumatra.parameters import build_parameters
@@ -35,7 +36,7 @@ def main(param_file=None):
                                            p['dict_label'],
                                            p['dict_extension']))
     model_path = path.join(result_path, p['model_label'])
-    lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
+    lsi = LsiModel.load(path.join(model_path, 'lsi.model'))
     pre = pickle.load(open(path.join(model_path, 'pre.model')))
     lsi.numTopics = p['num_topics']
 

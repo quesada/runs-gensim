@@ -53,8 +53,6 @@ def main(param_file=None):
     logger.info('initialize LSI model')
     lsi = models.LsiModel(pre_model[corpus_bow],
                           id2word=dictionary, num_topics=p['num_topics'])
-    np.save(os.path.join(output_dir, 'u.npy'), lsi.projection.u)
-    np.save(os.path.join(output_dir, 's.npy'), lsi.projection.s)
     lsi.save(os.path.join(output_dir, p['lsi_extension']))
     logger.info('finished --> lsi model saved to: %s' %
                 os.path.join(output_dir, p['lsi_extension']))

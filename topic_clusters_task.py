@@ -11,6 +11,7 @@ then be visualized with the corresponding viewer.
 """
 
 from gensim.corpora import Dictionary
+from gensim.gensim.models.lsimodel import LsiModel
 from os import path
 import numpy as np
 import os
@@ -36,7 +37,7 @@ def main(param_file=None):
                                            p['dict_label'],
                                            p['dict_extension']))
     model_path = path.join(result_path, p['model_label'])
-    lsi = pickle.load(open(path.join(model_path, 'lsi.model')))
+    lsi = LsiModel.load(path.join(model_path, 'lsi.model'))
     pre = pickle.load(open(path.join(model_path, 'pre.model')))
     if int(p['num_topics']) > lsi.num_topics:
         logger.error('model to small')

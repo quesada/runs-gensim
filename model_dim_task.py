@@ -44,14 +44,7 @@ def main(param_file=None):
 
     model_path = path.join(result_path, p['run'], p['lsi_ext'])
     logger.info('load model from: %s' % model_path)
-    lsi = LsiModel(id2word=dictionary)
-    if os.path.exists(path.join(result_path, p['run'], 'u.npy')):
-        lsi.projection.u = np.load(path.join(result_path, p['run'], 'u.npy'))
-        lsi.projection.s = np.load(path.join(result_path, p['run'], 's.npy'))
-        lsi.numTerms = len(dictionary)
-        lsi.numTopics = np.shape(lsi.projection.s)[0]
-    else:
-        lsi = LsiModel.load(model_path)
+    lsi = LsiModel.load(model_path)
     pre = SaveLoad.load(path.join(result_path, p['run'], p['pre_model_ext']))
 
     logging.info('load smal lee corpus and preprocess')
@@ -70,7 +63,7 @@ def main(param_file=None):
     sim_m_size = np.shape(human_sim_matrix)[0]
     human_sim_vector = human_sim_matrix[np.triu_indices(sim_m_size, 1)]
 
-    max_topics = lsi.numTopics
+    max_topics = lsi.num_topics
 
     logger.info("iterate from %d to %d dimensions (stepsize: %d)" %
                 (p['min_dim'], max_topics, p['dim_step']))
