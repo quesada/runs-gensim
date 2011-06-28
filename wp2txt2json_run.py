@@ -7,52 +7,70 @@ Created by Stephan Gabler on 2011-06-09.
 Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 """
 
+from os import path
 import codecs
 import glob
 import json
 import os
 import re
+import sys
 import time
+import tools
 
-path = '/Users/dedan/projects/mpi/data/corpora/wiki/wiki_de_2011/'
 
-files = glob.glob(path + '*.txt')
+def main(param_file=None):
 
-out = codecs.open(os.path.join(path, 'wiki.json'), mode='w', encoding='utf-8')
+    # setup
+    p, base_path, output_dir = tools.setup(param_file)
+    logger = tools.get_logger('gensim', path.join(output_dir, "run.log"))
+    logger.info("running %s" % ' '.join(sys.argv))
 
-headline = re.compile('\[\[(.*)\]\]')
-level2 = re.compile('== (.*) ==')
+    # in test case
+    if param_file:
+        files = [path.join(base_path, p['wiki_txt'])]
+    else:
+        files = glob.glob(path.join(base_path, p['wiki_txt']) + '*.txt')
 
-t0 = time.time()
-c = 0
-res = {}
+    out = codecs.open(os.path.join(output_dir, 'wiki.json'), mode='w', encoding='utf-8')
 
-for file in files:
-    print 'work on: %s' % file
-    with codecs.open(file, encoding='utf-8') as f:
-        for line in f:
+    headline = re.compile('\[\[(.*)\]\]')
+    level2 = re.compile('== (.*) ==')
 
-            # ignore linebreaks
-            if line == '\n':
-                continue
+    t0 = time.time()
+    c = 0
+    res = {}
 
-            # if we found a headline
-            if headline.search(line):
-                if len(res) > 0:
-                    out.write(json.dumps(res, encoding='utf-8', ensure_ascii=False) + '\n')
-                topic = headline.search(line).groups()[0]
-                res = {topic: {}}
-                sub = None
+    for file in files:
+        print 'work on: %s' % file
+        with codecs.open(file, encoding='utf-8') as f:
+            for line in f:
 
-            elif level2.search(line):
-                sub = level2.search(line).groups()[0]
-            else:
-                if not sub:
-                    res[topic].setdefault('desc', []).append(line.strip())
+                # ignore linebreaks
+                if line == '\n':
+                    continue
+
+                # if headline found
+                if headline.search(line):
+                    if len(res) > 0:
+                        out.write(json.dumps(res, encoding='utf-8', ensure_ascii=False) + '\n')
+                    topic = headline.search(line).groups()[0]
+                    res = {topic: {}}
+                    sub = None
+
+                elif level2.search(line):
+                    sub = level2.search(line).groups()[0]
                 else:
-                    res[topic].setdefault(sub, []).append(line.strip())
-    c += 1
-    print 'average execution time: %f' % ((time.time() - t0) / c)
-out.write(json.dumps(res, encoding='utf-8', ensure_ascii=False) + '\n')
+                    if not sub:
+                        res[topic].setdefault('desc', []).append(line.strip())
+                    else:
+                        res[topic].setdefault(sub, []).append(line.strip())
+        c += 1
+        print 'average execution time: %f' % ((time.time() - t0) / c)
+    out.write(json.dumps(res, encoding='utf-8', ensure_ascii=False) + '\n')
 
-print time.time() - t0
+    print time.time() - t0
+
+
+if __name__ == '__main__':
+    main()
+

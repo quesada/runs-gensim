@@ -1,0 +1,6 @@
+
+
+base_path       = './test/data/'
+wiki_txt        = 'corpora/wiki/wp2txt_small.txt'
+result_path     = 'results/'
+sumatra_label   = 'test'

@@ -17,6 +17,10 @@ out_dir = path.join(path.dirname(__file__),
 create_corpus_param_file = path.join(path.dirname(__file__),
                                      'param_files',
                                      'create_corpus_test.param')
+txt2json_param_file = path.join(path.dirname(__file__),
+                                'param_files',
+                                'wp2txt2json_test.param')
+
 
 
 def test_corpus_exists():
@@ -50,3 +54,15 @@ def test_dict_correct():
     d = Dictionary.load(path.join(out_dir, 'dic1.dict'))
     assert_equal(d.token2id, correct)
 
+def test_txt2json_creates():
+    """test whether json corpus was created"""
+    global out_dir
+    wp2txt2json_run.main(txt2json_param_file)
+    assert_true(path.exists(path.join(out_dir, 'wiki.json')))
+
+def test_txt2json_correct():
+    """test whether json corpus has correct length"""
+    global out_dir
+    wp2txt2json_run.main(txt2json_param_file)
+    with open(path.join(out_dir, 'wiki.json')) as f:
+        assert_true(len(f.readlines()) == 5)
