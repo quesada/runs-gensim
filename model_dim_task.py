@@ -92,6 +92,7 @@ def main(param_file=None):
     plt.plot(iter_range, res)
     plt.savefig(os.path.join(output_dir, 'cor_plot.' + p['plot_extension']))
     plt.close()
+    np.save(path.join(output_dir, 'model_dim_res.npy'), res)
 
     dif = datetime.now() - start
     logger.info("finished after %d days and %d secs" % (dif.days, dif.seconds))
