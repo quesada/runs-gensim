@@ -1,0 +1,16 @@
+0	kangaroos
+1	sushi
+2	ham
+3	hamster
+4	rabbit
+5	coffee
+6	chocolate
+7	owls
+8	curry
+9	tea
+10	snake
+11	squirrel
+12	milk
+13	eagle
+14	chewing gum
+15	fish
