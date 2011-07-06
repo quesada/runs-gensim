@@ -20,7 +20,6 @@ def test_output_exists():
     assert_true(path.exists(path.join(out_dir, 'run.log')))
     assert_true(path.exists(path.join(out_dir, 'lsi.model')))
     assert_true(path.exists(path.join(out_dir, 'pre.model')))
-    assert_true(path.exists(path.join(out_dir, 'dic.dict')))
     assert_true(path.exists(path.join(out_dir, 'lsi.model.npy')))
 
 

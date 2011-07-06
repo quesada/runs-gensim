@@ -32,13 +32,14 @@ def main(param_file=None):
     start = datetime.now()
 
     logger.info('loading word mapping')
-    dictionary = Dictionary.load_from_text(working_corpus +
-                                           p['word_ids_extension'])
-    dictionary.save(os.path.join(output_dir, p['dict_extension']))
+    dictionary = Dictionary.load(path.join(base_path,
+                                           p['corpus_path'],
+                                           p['dict_name']))
+    Dictionary.save(dictionary, path.join(output_dir, p['dict_name']))
     logger.info(dictionary)
 
     logger.info('loading corpus')
-    corpus_bow = MmCorpus(working_corpus + '_bow.mm')
+    corpus_bow = MmCorpus(working_corpus)
 
     logger.info("create preprocessing model and save it to disk")
     if p['pre_model'] == 'tfidf':
