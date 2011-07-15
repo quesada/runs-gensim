@@ -1,0 +1,12 @@
+# configuration
+
+# paths
+base_path       = './test/data/'
+result_path     = "results/"
+model_label     = 'test'
+dict_name       = 'dic.dict'
+
+
+
+
+sumatra_label   = 'test'
