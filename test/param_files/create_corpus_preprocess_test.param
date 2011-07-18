@@ -1,0 +1,11 @@
+
+base_path       = './test/data/'
+stoplist        = 'stoplists/teststoplist.txt'
+stemmer         = 'english'
+wiki_json       = 'corpora/wiki/very_small.json'
+result_path     = 'results/'
+sumatra_label   = 'test'
+corpus_name     = 'corpus.mm'
+dict_name       = 'dic1.dict'
+no_below        = 0
+no_above        = 1

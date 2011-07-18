@@ -9,6 +9,7 @@ from os import path
 import os
 import sys
 import tools
+import Stemmer
 
 def main(param_file=None):
 
@@ -17,9 +18,23 @@ def main(param_file=None):
     logger = tools.get_logger('gensim', os.path.join(output_dir, "run.log"))
     logger.info("running %s" % ' '.join(sys.argv))
 
+    preprocess = []
+
+    if 'stoplist' in p.as_dict():
+        stoplist = open(path.join(base_path, p['stoplist'])).readlines()
+        stoplist = [unicode(s.strip(), encoding='utf-8').lower() for s in stoplist]
+        def remove_stopwords(sentence):
+            return [word for word in sentence if not word in stoplist]
+        preprocess.append(remove_stopwords)
+
+    if 'stemmer' in p.as_dict():
+        stemmer = Stemmer.Stemmer(p['stemmer'])
+        preprocess.append(stemmer.stemWords)
+
     cor = JsonCorpus(path.join(base_path, p['wiki_json']),
                      no_below=p['no_below'],
-                     no_above=p['no_above'])
+                     no_above=p['no_above'],
+                     preprocess=preprocess)
     MmCorpus.serialize(path.join(output_dir, p['corpus_name']), cor, progress_cnt=10000)
     cor.dictionary.save(path.join(output_dir, p['dict_name']))
 
