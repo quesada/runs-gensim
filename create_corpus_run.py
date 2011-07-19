@@ -3,13 +3,14 @@ Created on 27.06.2011
 
 @author: dedan
 '''
-from gensim.gensim.corpora.mmcorpus import MmCorpus
 from gensim.gensim.corpora.jsoncorpus import JsonCorpus
+from gensim.corpora.textfilescorpus import TextFilesCorpus
+from gensim.gensim.corpora.mmcorpus import MmCorpus
 from os import path
+import Stemmer
 import os
 import sys
 import tools
-import Stemmer
 
 def main(param_file=None):
 
@@ -31,10 +32,17 @@ def main(param_file=None):
         stemmer = Stemmer.Stemmer(p['stemmer'])
         preprocess.append(stemmer.stemWords)
 
-    cor = JsonCorpus(path.join(base_path, p['wiki_json']),
-                     no_below=p['no_below'],
-                     no_above=p['no_above'],
-                     preprocess=preprocess)
+    if p['input'].endswith('.json'):
+        cor = JsonCorpus(path.join(base_path, p['input']),
+                         no_below=p['no_below'],
+                         no_above=p['no_above'],
+                         preprocess=preprocess)
+    else:
+        cor = TextFilesCorpus(path.join(base_path, p['input']),
+                      no_below=p['no_below'],
+                      no_above=p['no_above'],
+                      preprocess=preprocess)
+
     MmCorpus.serialize(path.join(output_dir, p['corpus_name']), cor, progress_cnt=10000)
     cor.dictionary.save(path.join(output_dir, p['dict_name']))
 
