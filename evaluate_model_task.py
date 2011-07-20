@@ -13,6 +13,7 @@ from gensim.gensim.models.logentropy_model import LogEntropyModel
 from gensim.gensim.utils import SaveLoad
 from gensim.models.lsimodel import LsiModel
 from gensim.similarities.docsim import MatrixSimilarity
+from scipy import stats
 from os import path
 import Stemmer
 import glob
@@ -59,6 +60,7 @@ def main(param_file=None):
         dictionary = Dictionary.load(path.join(model_path, p['dict_name']))
         pre = SaveLoad.load(path.join(model_path, 'pre.model'))
         lsi = LsiModel.load(path.join(model_path, 'lsi.model'))
+        lsi.num_topics = p['num_topics']
 
     test_cor_path = path.join(base_path, p['test_cor_path'])
     test_answers, gold_answers, ratings = [], [], []
@@ -88,8 +90,8 @@ def main(param_file=None):
 
     sim = MatrixSimilarity(test_answers)[gold_answers]
     mean_sim = np.mean(sim, axis=0)
-    print mean_sim
-    print np.corrcoef(ratings, mean_sim)
+    print 'pearsons corrcoef: %f' % np.corrcoef(ratings, mean_sim)[0,1]
+    print 'spearmans r: %f with p: %f' % stats.spearmanr(ratings, mean_sim)
 
 if __name__ == '__main__':
     main()
