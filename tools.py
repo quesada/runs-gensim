@@ -9,6 +9,10 @@ import logging
 import os
 import sys
 import gensim
+from nltk.corpus import wordnet as wn
+import json
+import subprocess as sp
+
 
 
 def get_logger(module, fname):
@@ -44,3 +48,28 @@ def setup(param_file=None):
     if not path.exists(output_dir):
         os.mkdir(output_dir)
     return p, base_path, output_dir
+
+
+def tag(sentence, senna_path):
+
+    p = sp.Popen(['blabla', '-path',  senna_path],
+                 executable=os.path.join(senna_path, 'senna'),
+                 stdin=sp.PIPE,
+                 stdout=sp.PIPE)
+    
+    tagged = p.communicate(sentence)[0]
+    
+    words = []
+    for line in tagged.split('\n'):
+        if not line == '':
+            tmp = line.split()
+            words.append({'term': tmp[0],
+                          'pos': tmp[1],
+                          'chk': tmp[2]})
+            if not tmp[3] == "O":
+                words[-1]['ner'] = tmp[3]
+            if len(tmp) > 5:
+                if not tmp[4] == "-":
+                    words[-1]['base'] = tmp[4]
+                words[-1]['srl'] = tmp[5]
+    return words
