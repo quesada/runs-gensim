@@ -1,10 +1,17 @@
 # configuration
 
 # paths
-base_path       = './test/data/'
+base_path       = '/Users/dedan/projects/mpi/data/'
 result_path     = "results/"
-model_label     = 'test'
+corpus_path     = 'corpora/fridolin/marketing_glossar/'
+test_cor_path   = 'corpora/fridolin/'
+model_label     = ''
 dict_name       = 'dic.dict'
+stemmer         = 'german'
+stoplist        = 'stoplists/german_stoplist.txt'
+no_below        = 0
+no_above        = 1
+num_topics      = 30
 
 
 
