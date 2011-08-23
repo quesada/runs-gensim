@@ -1,0 +1,5 @@
+1.house:door
+The house is big.
+The door is small.
+0.04
+0.16

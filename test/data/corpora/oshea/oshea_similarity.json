@@ -1,0 +1,62 @@
+[
+  {
+    "values": [
+      0.04, 
+      0.16
+    ], 
+    "terms": [
+      "house", 
+      "door"
+    ], 
+    "sentences_tagged": [
+      [
+        {
+          "term": "The", 
+          "chk": "B-NP", 
+          "pos": "DT"
+        }, 
+        {
+          "term": "house", 
+          "chk": "E-NP", 
+          "pos": "NN"
+        }, 
+        {
+          "term": "is", 
+          "chk": "S-VP", 
+          "pos": "VBZ"
+        }, 
+        {
+          "term": "big", 
+          "chk": "S-ADJP", 
+          "pos": "JJ"
+        }
+      ], 
+      [
+        {
+          "term": "The", 
+          "chk": "B-NP", 
+          "pos": "DT"
+        }, 
+        {
+          "term": "door", 
+          "chk": "E-NP", 
+          "pos": "NN"
+        }, 
+        {
+          "term": "is", 
+          "chk": "S-VP", 
+          "pos": "VBZ"
+        }, 
+        {
+          "term": "small", 
+          "chk": "S-ADJP", 
+          "pos": "JJ"
+        }
+      ]
+    ], 
+    "sentences": [
+      "The house is big.", 
+      "The door is small."
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+
+base_path       = './test/data/'
+corpora_path    = "corpora/oshea/"
+result_path     = 'results/'
+sumatra_label   = 'test'
+corpus_name     = 'oshea_similarity_test.txt'
+result_name     = 'oshea_similarity.json'
+senna_path      = '/Users/dedan/Downloads/senna-v2.0/'
