@@ -71,5 +71,5 @@ def tag(sentence, senna_path):
             if len(tmp) > 5:
                 if not tmp[4] == "-":
                     words[-1]['base'] = tmp[4]
-                words[-1]['srl'] = tmp[5]
+                words[-1]['srl'] = tmp[5:]
     return words

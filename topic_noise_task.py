@@ -33,12 +33,12 @@ def main(param_file=None):
 
     logger.info('loading models and dictionary')
     dictionary = Dictionary.load(path.join(result_path,
-                                           p['dict_label'],
-                                           p['dict_extension']))
+                                           p['model_label'],
+                                           'dic.dict'))
     model_path = path.join(result_path, p['model_label'])
     lsi = LsiModel.load(path.join(model_path, 'lsi.model'))
     pre = pickle.load(open(path.join(model_path, 'pre.model')))
-    lsi.numTopics = p['num_topics']
+    lsi.num_topics = p['num_topics']
 
     logger.info('load wikipedia articles')
     article_path = path.join(result_path, p['article_label'])
@@ -50,12 +50,12 @@ def main(param_file=None):
         logger.info("working on: %s" % query_key)
         n = len(query)
         human = [val['rating'] for val in query.itervalues()]
-        sim_res = np.zeros((n, n))
 
         t0 = time.time()
         corpus = [lsi[pre[dictionary.doc2bow(val['text'])]]
                     for val in query.itervalues()]
         sim_res = MatrixSimilarity(corpus)[corpus]
+        sim_res.save(path.join(output_dir, 'sim_' + query_key))
         avg = np.mean(sim_res, axis=0)
         idx = np.argsort(avg)
         times[count] = time.time() - t0

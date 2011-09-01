@@ -14,6 +14,7 @@ from sumatra.parameters import build_parameters
 import sys
 from os import path
 import pickle
+import os
 
 
 # define what should happen when a point is picked
