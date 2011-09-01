@@ -34,8 +34,8 @@ def main(param_file=None):
 
     logger.info('load dictionary and models')
     dictionary = Dictionary.load(path.join(result_path,
-                                           p['dict_label'],
-                                           p['dict_extension']))
+                                           p['model_label'],
+                                           'dic.dict'))
     model_path = path.join(result_path, p['model_label'])
     lsi = LsiModel.load(path.join(model_path, 'lsi.model'))
     pre = pickle.load(open(path.join(model_path, 'pre.model')))

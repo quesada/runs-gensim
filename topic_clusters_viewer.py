@@ -15,6 +15,8 @@ import sys
 from os import path
 import pickle
 import os
+from hcluster import pdist, linkage, dendrogram
+
 
 
 # define what should happen when a point is picked
@@ -37,13 +39,24 @@ data = pickle.load(open(path.join(result_path,
                                   p['data_label'], 'data.pickle')))
 
 for key, val in data.iteritems():
+# for bla in [1]:
+#     key, val = 'eagle', data['eagle']
+    
 
     fig = plt.figure()
     fig.canvas.mpl_connect('pick_event', onpick)
-    plt.subplot(2, 1, 1)
+    plt.subplot(3, 1, 1)
     plt.title(key)
 
     proj = np.dot(val['U'][:, 0:2].T, val['vecs'])
+
+    print np.shape(proj)
+    Y = pdist(proj.T)
+    Z = linkage(Y)
+    dendrogram(Z)
+    
+    plt.subplot(3, 1, 2)
+    
 
     for i in range(proj.shape[1]):
         col = (1 - (val['ratings'][i] / 100.0)) * 0.7
@@ -53,6 +66,7 @@ for key, val in data.iteritems():
                        picker=3)
         pt.name = val['keys'][i]
 
-    plt.subplot(2, 1, 2)
+    plt.subplot(3, 1, 3)
     plt.plot(val['d'])
-    plt.show()
+    plt.savefig(key + ".png")
+#    plt.show()
